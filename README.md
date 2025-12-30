@@ -1,50 +1,27 @@
-# Welcome to your Expo app 👋
+1) the app is like a uni tracker :
+- poor university applicants suffering from upcoming deadlines can use this app as a tracker all across the board.
+- signup and login (account creation) verified via AppWrite's authintication system.
+- list of the 8 Ivy Leauge unis, can scroll and discover them via search tool.
+- each uni's required supplementall essay prompts are mentioned, discussed, and provided immense resources/ info on
+- users can input all their grades and select the unis they like to get a status option
+- grades and which uni lists with status updates are saved for each user specifically through AppWrite's applicant datatable
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+2) sadly I was only able to implement a few:
+- valid signup and login, succsesfully connecting to appwrite authintacation and corresponding functionality
+- listed the ivy leauges with horizontal scroll and search tool with descriptions only (didnt create repsective individual pages)
+- users actually can input grades, just that I didnt manage to connect my datatable so more decorative end result
 
-1. Install dependencies
+3)How to use: 
+ - signup (you dont have an account but ill provide one just in case login is needed):
+  -------> email: no2@gmail.com
+  -------> password: nomit (or) nomit1221
+  - when you access home page you can look around reading overviews of each uni, clicking to see individual in depth breakdowns (theoritcally for now).
 
-   ```bash
-   npm install
-   ```
+  - you can click on the grades button to go to its corresponding page to input IB, Bugroot, SAT, ACT grades 
+ - you can also click on profile to see you saved grades and uni aplication statuses (theortically for now)
 
-2. Start the app
+ 4) you know how to run just npx expo start:
+ - works on both iphone and laptop (web) idk about android though
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+ 5)I watched a couple of videos and expirminted first in total around 2 - 3 hours. the app itself took me three days working at least an hour and a half each day.
