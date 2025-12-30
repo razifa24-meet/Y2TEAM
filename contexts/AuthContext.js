@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { account, databases, ID } from "../appwriteConfig";
-import { APPLICANTS_COLLECTION_ID, DB_ID } from "../constants";
+import { account, ID } from "../appwriteConfig";
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -22,8 +21,13 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  // dead-end cuz a session is already active issuee
+  // have to add delte session prior to account create
   const signUp = async (name, email, password) => {
-  // Create the user account
+  try {
+    await account.deleteSession("current");
+  } catch {}
+
   const newUser = await account.create({
     userId: ID.unique(),
     email,
@@ -31,35 +35,28 @@ export const AuthProvider = ({ children }) => {
     name,
   });
 
-  // Immediately log them in
   await account.createEmailPasswordSession({
     email,
     password,
   });
 
-  await fetchUser(); // refresh user in context
-
-  // Create applicant document if needed
-  try {
-    await databases.createDocument(DB_ID, APPLICANTS_COLLECTION_ID, ID.unique(), {
-      userID: newUser.$id,
-      name: name,
-      universities: [],
-      statuses: [],
-    });
-  } catch (e) {
-    // ignore if document already exists
-  }
+  await fetchUser();
 };
 
 // login
 const login = async (email, password) => {
+  try {
+    await account.deleteSession("current");
+  } catch {}
+
   await account.createEmailPasswordSession({
     email,
     password,
   });
+
   await fetchUser();
 };
+
   const logout = async () => {
     try {
       await account.deleteSession("current");
