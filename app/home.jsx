@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     Button,
     FlatList,
@@ -82,21 +82,25 @@ export default function Home() {
   const router = useRouter();
   const [search, setSearch] = useState("");
 
-  // go to login if not logged 
-  if (!user) {
-    router.replace("/login");
-    return null;
-  }
+  // redirect ONLY after render
+  useEffect(() => {
+    if (!user) {
+      router.replace("/login");
+    }
+  }, [user]);
 
   const filteredUniversities = ivyLeagues.filter((u) =>
-    u.name.toLowerCase().includes(search.toLowerCase()),
+    u.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const renderUniversity = ({ item }) => (
     <TouchableOpacity
       style={styles.card}
       onPress={() =>
-        router.push({ pathname: "/university", params: { ...item } })
+        router.push({
+          pathname: "/university",
+          params: { ...item },
+        })
       }
     >
       <Text style={styles.uniName}>{item.name}</Text>
@@ -112,11 +116,14 @@ export default function Home() {
           value={search}
           onChangeText={setSearch}
         />
+
         <View style={styles.buttonsRow}>
           <Button title="Grades" onPress={() => router.push("/grades")} />
           <Button title="Profile" onPress={() => router.push("/profile")} />
         </View>
+
         <Text style={styles.subtitle}>Ivy League Universities</Text>
+
         <FlatList
           data={filteredUniversities}
           horizontal
@@ -145,6 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 12,
+    backgroundColor: "#fff",
   },
   buttonsRow: {
     flexDirection: "row",
@@ -153,8 +161,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: "600",
     marginBottom: 8,
+    color: "#000",
   },
   listContainer: {
     paddingVertical: 8,
