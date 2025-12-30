@@ -13,6 +13,9 @@ import {
     TouchableWithoutFeedback,
     View,
 } from "react-native";
+
+import { databases, ID, Query } from "../appwriteConfig";
+import { APPLICANTS_COLLECTION_ID, DB_ID } from "../constants";
 import { AuthContext } from "../contexts/AuthContext";
 
 export default function Grades() {
@@ -21,25 +24,70 @@ export default function Grades() {
 
   const [sat, setSat] = useState("");
   const [gpa, setGpa] = useState("");
-  const [ibScore, setIbScore] = useState("");
+  const [ib, setIb] = useState("");
+  const [docId, setDocId] = useState(null);
 
   useEffect(() => {
     if (!user) {
       router.replace("/login");
+      return;
     }
+
+    const loadGrades = async () => {
+      try {
+        const res = await databases.listDocuments(
+          DB_ID,
+          APPLICANTS_COLLECTION_ID,
+          [Query.equal("userID2", user.$id)]
+        );
+
+        if (res.documents.length > 0) {
+          const doc = res.documents[0];
+          setDocId(doc.$id);
+          setSat(doc.satScore?.toString() || "");
+          setGpa(doc.gpa?.toString() || "");
+          setIb(doc.ib?.toString() || "");
+        }
+      } catch {}
+    };
+
+    loadGrades();
   }, [user]);
 
-  const handleSave = () => {
-    console.log({
-      SAT: sat,
-      GPA: gpa,
-      IB: ibScore,
-    });
+  const handleSave = async () => {
+    const payload = {
+      userID2: user.$id,
+      satScore: sat ? Number(sat) : null,
+      gpa: gpa ? Number(gpa) : null,
+      ib: ib ? Number(ib) : null,
+    };
+
+    try {
+      if (docId) {
+        await databases.updateDocument(
+          DB_ID,
+          APPLICANTS_COLLECTION_ID,
+          docId,
+          payload
+        );
+      } else {
+        const created = await databases.createDocument(
+          DB_ID,
+          APPLICANTS_COLLECTION_ID,
+          ID.unique(),
+          payload
+        );
+        setDocId(created.$id);
+      }
+    } catch (e) {
+      console.log("SAVE ERROR:", e);
+    }
+
     Keyboard.dismiss();
   };
 
   return (
-    <LinearGradient colors={["#1d2671", "#c33764"]} style={styles.gradient}>
+    <LinearGradient colors={["#1d2671", "#c33764"]} style={{ flex: 1 }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -53,7 +101,7 @@ export default function Grades() {
 
             <TextInput
               style={styles.input}
-              placeholder="SAT Score (e.g. 1520)"
+              placeholder="SAT (400–1600)"
               keyboardType="numeric"
               value={sat}
               onChangeText={setSat}
@@ -61,7 +109,7 @@ export default function Grades() {
 
             <TextInput
               style={styles.input}
-              placeholder="GPA (e.g. 3.9)"
+              placeholder="GPA (0–4)"
               keyboardType="decimal-pad"
               value={gpa}
               onChangeText={setGpa}
@@ -69,13 +117,13 @@ export default function Grades() {
 
             <TextInput
               style={styles.input}
-              placeholder="IB Score (e.g. 42)"
+              placeholder="IB (0–45)"
               keyboardType="numeric"
-              value={ibScore}
-              onChangeText={setIbScore}
+              value={ib}
+              onChangeText={setIb}
             />
 
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 24 }}>
               <Button title="Save Grades" onPress={handleSave} />
             </View>
           </ScrollView>
@@ -86,9 +134,6 @@ export default function Grades() {
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   container: {
     flexGrow: 1,
     padding: 20,
@@ -98,14 +143,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "700",
     color: "#fff",
-    marginBottom: 24,
     textAlign: "center",
+    marginBottom: 24,
   },
   input: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fff",
     borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    padding: 14,
     fontSize: 16,
     marginBottom: 14,
   },
